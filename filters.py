@@ -1,5 +1,11 @@
 from point import Point, add_points, scale_point, invert_point
 
+def null_filter():
+	"""Filter which returns points as-is"""
+	def process(new_data):
+		return new_data
+	return process
+
 
 def fir_filter(weights):
 	"""Returns a FIR filter with the specified weights.
