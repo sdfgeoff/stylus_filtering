@@ -28,6 +28,7 @@ def run_and_plot_filter(noisy_shape, filtered_shape, shape, run_name, name):
 	plt.gca().set_autoscale_on(False)
 	plt.plot(noisy_shape_x, noisy_shape_y, 'rx')
 	plt.plot(filtered_shape_x, filtered_shape_y, 'b')
+	plt.plot(filtered_shape_x[-1], filtered_shape_y[-1], 'bo', fillstyle='none')
 
 	plt.title(name + ' (Average Delta = {:.02f})'.format(comparison))
 	
