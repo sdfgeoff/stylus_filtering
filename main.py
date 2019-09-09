@@ -23,11 +23,12 @@ def run_and_plot_filter(noisy_shape, filtered_shape, shape, run_name, name):
 	filtered_shape_x, filtered_shape_y = point_array.point_array_to_axis_arrays(filtered_shape)
 	shape_x, shape_y = point_array.point_array_to_axis_arrays(shape)
 	noisy_shape_x, noisy_shape_y = point_array.point_array_to_axis_arrays(noisy_shape)
-	
-	plt.plot(filtered_shape_x, filtered_shape_y, 'b')
+
 	plt.plot(shape_x, shape_y, 'g')
+	plt.gca().set_autoscale_on(False)
 	plt.plot(noisy_shape_x, noisy_shape_y, 'rx')
-	
+	plt.plot(filtered_shape_x, filtered_shape_y, 'b')
+
 	plt.title(name + ' (Average Delta = {:.02f})'.format(comparison))
 	
 	directory = "output/{}".format(run_name)
