@@ -10,7 +10,7 @@ def point_array_to_axis_arrays(points):
 
 
 def sum_point_arrays(pa1, pa2):
-	""" Adds thematching points inside two point arrays to create
+	""" Adds the matching points inside two point arrays to create
 	one array of the same length of the input arrays. Input arrays
 	must be the same length"""
 	assert len(pa1) == len(pa2)

@@ -1,5 +1,11 @@
 from point import Point, add_points, scale_point, invert_point
 
+def null_filter():
+	"""Filter which returns points as-is"""
+	def process(new_data):
+		return new_data
+	return process
+
 
 def fir_filter(weights):
 	"""Returns a FIR filter with the specified weights.
@@ -30,10 +36,13 @@ def mean_filter(size):
 	
 def exp_filter(percent):
 	"""IIR filter with the specified decay"""
-	prev = Point(0, 0)
+	prev = None
 	
 	def process(new_data):
 		nonlocal prev
+		
+		if prev is None:
+			prev = new_data
 		
 		new_point = add_points(
 			scale_point(prev, percent),
@@ -47,13 +56,16 @@ def exp_filter(percent):
 
 
 def simple_predictive_filter(prediction_factor, velocity_smoothing_factor):
-	prev_prediction = Point(0, 0)
+	prev_prediction = None
 	est_velocity = Point(0, 0)
 	
 	def process(new_data):
 		nonlocal prev_prediction
 		nonlocal est_velocity
 		
+		if prev_prediction is None:
+			prev_prediction = new_data
+
 		current_velocity = add_points(new_data, invert_point(prev_prediction))
 		est_velocity = add_points(
 			scale_point(est_velocity, velocity_smoothing_factor),

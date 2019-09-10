@@ -1,9 +1,12 @@
 import matplotlib.pyplot as plt
+from collections import namedtuple
 from point import *
 import filters
 import point_array
 import noise
 import os
+
+TestCase = namedtuple("TestCase", ["name", "filter"])
 
 def squared_difference(point_array_1, point_array_2):
 	assert len(point_array_1) == len(point_array_2)
@@ -23,11 +26,13 @@ def run_and_plot_filter(noisy_shape, filtered_shape, shape, run_name, name):
 	filtered_shape_x, filtered_shape_y = point_array.point_array_to_axis_arrays(filtered_shape)
 	shape_x, shape_y = point_array.point_array_to_axis_arrays(shape)
 	noisy_shape_x, noisy_shape_y = point_array.point_array_to_axis_arrays(noisy_shape)
-	
-	plt.plot(filtered_shape_x, filtered_shape_y, 'b')
+
 	plt.plot(shape_x, shape_y, 'g')
+	plt.gca().set_autoscale_on(False)
 	plt.plot(noisy_shape_x, noisy_shape_y, 'rx')
-	
+	plt.plot(filtered_shape_x, filtered_shape_y, 'b')
+	plt.plot(filtered_shape_x[-1], filtered_shape_y[-1], 'bo', fillstyle='none')
+
 	plt.title(name + ' (Average Delta = {:.02f})'.format(comparison))
 	
 	directory = "output/{}".format(run_name)
@@ -46,40 +51,23 @@ def generate_box():
 
 
 def run_filters(shape, noisy_shape, run_name):
-	run_and_plot_filter(
-		noisy_shape,
-		noisy_shape,
-		shape,
-		run_name,
-		"No Filter"
-	)
-	
-	run_and_plot_filter(
-		noisy_shape,
-		filters.filter_array(filters.mean_filter(4), noisy_shape),
-		shape,
-		run_name,
-		"Reference (Median Filter 4 Samples)"
-	)
-	
+	test_cases = [
+	  TestCase("No Filter", filters.null_filter()),
+	  TestCase("Reference (Median Filter 4 Samples)", filters.mean_filter(4))
+	]
 	for smoothing in [0.5, 0.8]:
 		for prediction in [0.5, 0.8]:
-			run_and_plot_filter(
-				noisy_shape,
-				filters.filter_array(filters.simple_predictive_filter(prediction, smoothing), noisy_shape),
-				shape,
-				run_name,
-				"Predictive Filter (predict={}, smooth={})".format(prediction, smoothing)
+			test_cases.append(
+			  TestCase("Predictive Filter (predict={}, smooth={})".format(prediction, smoothing),
+			           filters.simple_predictive_filter(prediction, smoothing))
 			)
-	
 	for fc in [0.6]:
-		run_and_plot_filter(
-			noisy_shape,
-			filters.filter_array(filters.exp_filter(fc), noisy_shape),
-			shape,
-			run_name,
-			"Exp Filter {}".format(fc)
+		test_cases.append(
+		  TestCase("Exp Filter {}".format(fc), filters.exp_filter(fc))
 		)
+
+	for case in test_cases:
+		run_and_plot_filter(noisy_shape, filters.filter_array(case.filter, noisy_shape), shape, run_name, case.name)
 
 
 if __name__ == "__main__":
