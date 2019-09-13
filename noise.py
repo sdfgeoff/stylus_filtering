@@ -2,14 +2,14 @@ import random
 from point import Point
 
 
-def white_noise(seed, length):
+def white_noise(seed, magnitude):
 	""" Returns a function that, when called, returns a point containing
-	white noise with the specified seed and legnth """
+	white noise with the specified magnitude """
 	generator = random.Random(seed)
 	def generate():
 		return Point(
-			(generator.random() - 0.5) * 2.0 * length,
-			(generator.random() - 0.5) * 2.0 * length
+			generator.gauss(0, magnitude),
+			generator.gauss(0, magnitude)
 		)
 	return generate
 
