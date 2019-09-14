@@ -1,3 +1,4 @@
+import setup
 from noise import *
 
 def test_white_noise():
