@@ -20,7 +20,12 @@ def fir_filter(weights):
             history = history[-len(weights):]
 
         p_sum = Point(0, 0)
-        for point, weight in zip(reversed(history), weights):
+        
+        # Ensure the weights are normalized for the available history
+        normalized_weights =  weights[:len(history)]
+        normalized_weights = [w/sum(normalized_weights) for w in normalized_weights]
+        
+        for point, weight in zip(reversed(history), normalized_weights):
             p_sum = add_points(p_sum, scale_point(point, weight))
 
         return p_sum
