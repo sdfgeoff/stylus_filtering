@@ -7,6 +7,7 @@ from point import *
 import filters
 import point_array
 import noise
+import shapes
 
 
 TestFilter = namedtuple("TestCase", ["filter_name", "filter"])
@@ -14,31 +15,6 @@ TestShape = namedtuple("TestShape", ["shape_name", "clean_shape", "noisy_shape"]
 TestResult = namedtuple("TestResult", ["shape", "filter", "filtered_array", "average_error"])
 
 
-def generate_box():
-    """ Generates a predetermined zigzag line that can be used to test
-    the response to sharp corners"""
-    points = []
-    points.extend(point_array.generate_line_segment(Point(0, 0), Point(0, 5), 20))
-    points.extend(point_array.generate_line_segment(Point(0, 5), Point(5, 5), 20))
-    points.extend(point_array.generate_line_segment(Point(5, 5), Point(5, 0), 20))
-    return points
-
-
-def generate_step():
-    """ Generates a single step to make it easy to check overshoot """
-    points = []
-    points.extend(point_array.generate_line_segment(Point(0, 0), Point(5, 0), 20))
-    points.extend(point_array.generate_line_segment(Point(5, 5), Point(10, 5), 20))
-    return points
-
-
-def generate_sine():
-    """ Generates a predetermined zigzag line that can be used to test
-    corner-cutting on a more natural shape """
-    points = []
-    for x in range(100):
-        points.append(Point(x/20, math.sin(x/20)*2.5 + 2.5))
-    return points
 
 
 def get_test_filters():
@@ -64,14 +40,19 @@ def get_test_filters():
 def get_test_shapes():
     """ Run each filter on these different steps. This makes it possible
     to check filter response on different sets of input data """
-    box = generate_box()
-    step = generate_step()
-    sine = generate_sine()
+    box = shapes.generate_box()
+    step = shapes.generate_step()
+    sine = shapes.generate_sine()
+    
+    l390_data = shapes.parse_file(open("shapes/raw_data/thinkpad_L390.data"))
+    l390_data2 = shapes.parse_file(open("shapes/raw_data/thinkpad_L390_2.data"))
 
     test_shapes = [
         TestShape("Box Clean", box, box),
         TestShape("Step Clean", step, step),
         TestShape("Sine Clean", sine, sine),
+        TestShape("L390 Data", l390_data, l390_data),
+        TestShape("L390 Data 2", l390_data2, l390_data2),
     ]
     for seed in range(3):
         distortion_box = noise.generate_noise_array(noise.white_noise(seed, 0.2), len(box))

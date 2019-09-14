@@ -1,3 +1,4 @@
+import setup
 from point import *
 
 def test_add_points():

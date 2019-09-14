@@ -1,3 +1,4 @@
+import setup
 from point_array import *
 
 def test_point_array_to_axis_arrays():

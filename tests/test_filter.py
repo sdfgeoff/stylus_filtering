@@ -1,3 +1,4 @@
+import setup
 from filters import *
 
 def test_fir_filter():
