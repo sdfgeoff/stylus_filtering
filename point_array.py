@@ -1,4 +1,4 @@
-from point import Point, add_points, invert_point, scale_point
+from point import Point, add_points, invert_point, scale_point, squared_dist_points
 
 def point_array_to_axis_arrays(points):
 	""" Separates an array of points into two arrays: one of all the X
@@ -32,3 +32,13 @@ def generate_line_segment(start_point, end_point, steps):
 		current_point = add_points(start_point, current_delta)
 		points.append(current_point)
 	return points
+
+
+def squared_difference(point_array_1, point_array_2):
+    """ Returns the sum of squared error between two point arrays """
+    assert len(point_array_1) == len(point_array_2)
+    squared_delta = 0
+    for p_id, p1 in enumerate(point_array_1):
+        p2 = point_array_2[p_id]
+        squared_delta += squared_dist_points(p1, p2)
+    return squared_delta / len(point_array_1)
